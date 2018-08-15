@@ -84,6 +84,7 @@ class ArBin<T extends Comparable>
       System.out.println("elemento similar descartado "+nodo);
     }
 
+    /*
     if (compare != 0)
     {
       setFactorBalance(root);
@@ -124,7 +125,7 @@ class ArBin<T extends Comparable>
         System.out.println("rotación estable");
       }
     }
-
+    */
   }
 
   public void add(Iterable<T> list)
@@ -134,6 +135,47 @@ class ArBin<T extends Comparable>
       add(this.root,new Node<T>(t));
     }
   }
+
+  public Node<T> search(T info)
+  {
+    return search(new Node<T>(info));
+  }
+
+  public Node<T> search(Node<T> node)
+  {
+    return search(this.root,node);
+  }
+
+  public Node<T> search(Node<T> root, Node<T> one)
+  {
+    int compare = root.getInfo().compareTo(one.getInfo());
+    if(compare > 0)
+    {
+      if (root.getLeft() == null) {return null;}
+      else{return search(root.getLeft(),one);}
+    }
+    else if(compare < 0)
+    {
+      if (root.getRight() == null) {return null;}
+      else{return search(root.getRight(),one);}
+    }
+    else
+    {
+      return root;
+    }
+  }
+
+  public void del(Node<T> node)
+  {
+    search(node).del();
+  }
+
+  public void del(T info)
+  {
+    del(new Node<T>(info));
+  }
+
+
 
   //recorridos
 
@@ -206,6 +248,7 @@ class ArBin<T extends Comparable>
     }
   }
 
+  /*
   //rotaciones
 
   public int getAltura(Node<T> root)
@@ -263,6 +306,7 @@ class ArBin<T extends Comparable>
     x.setRight(rotacionDerecha(x.getRight()));
     return rotacionIzquierda(x);
   }
+  */
 
   //ATRIB_______________________________________________________________________
 
@@ -318,12 +362,28 @@ final class Node<T extends Comparable>
     return "Node: " + this.info.toString();
   }
 
+  @Override
+  public boolean equals(Object o)
+  {
+    if(o instanceof Node)
+    {
+      if(((Node<T>)o).getInfo().equals(this.getInfo()))
+      {
+        return true;
+      }
+    }
+    return false;
+  }
+
   public void clone(Node<T> nodo)
   {
     this.setInfo(nodo.getInfo());
     this.setLeft(nodo.getLeft());
     this.setRight(nodo.getRight());
   }
+
+  public void del()
+  {}
 
   //ATRIB_______________________________________________________________________
 
