@@ -29,6 +29,9 @@ public class Tree
     ab.postorden();
     System.out.println("Niveles:");
     ab.levels();
+
+
+    System.out.println("\n altura: \n "+ab.altura());
   }
 }
 
@@ -55,6 +58,11 @@ class ArBin<T extends Comparable>
   //METHODS_____________________________________________________________________
 
   //operaciones básicas
+
+  public int altura()
+  {
+    return this.root.altura();
+  }
 
   public void add(Node<T> nodo)
   {
@@ -84,48 +92,7 @@ class ArBin<T extends Comparable>
       System.out.println("elemento similar descartado "+nodo);
     }
 
-    /*
-    if (compare != 0)
-    {
-      setFactorBalance(root);
-      setFactorBalance(root.getLeft());
-      setFactorBalance(root.getRight());
 
-      System.out.println("factores de valance:");
-      System.out.println(getFactorBalance(root));
-      System.out.println(getFactorBalance(root.getLeft()));
-      System.out.println(getFactorBalance(root.getRight()));
-
-      if (getFactorBalance(root) == -2 && getFactorBalance(root.getLeft())!=1)
-      {
-        System.out.println("caso 1 de valance");
-        root.clone(rotacionDerecha(root));
-        //System.out.println(root);
-      }
-      else if (getFactorBalance(root) == 2 && getFactorBalance(root.getRight())!=-1)
-      {
-        System.out.println("caso 2 de valance");
-        root.clone(rotacionIzquierda(root));
-        //System.out.println(root);
-      }
-      else if (getFactorBalance(root) == 2 && getFactorBalance(root.getRight())==-1)
-      {
-        System.out.println("caso 3 de valance");
-        root.clone(rotacionDobleIzquierda(root));
-        //System.out.println(root);
-      }
-      else if (getFactorBalance(root) == -2 && getFactorBalance(root.getLeft())==1)
-      {
-        System.out.println("caso 4 de valance");
-        root.clone(rotacionDobleDerecha(root));
-        //System.out.println(root);
-      }
-      else
-      {
-        System.out.println("rotación estable");
-      }
-    }
-    */
   }
 
   public void add(Iterable<T> list)
@@ -248,66 +215,6 @@ class ArBin<T extends Comparable>
     }
   }
 
-  /*
-  //rotaciones
-
-  public int getAltura(Node<T> root)
-  {
-    if (root == null){return -1;}
-    return (1 + Math.max(getAltura(root.getLeft()), getAltura(root.getRight())));
-  }
-
-  public int getFactorBalance(Node<T> root)
-  {
-    if (root == null){return 0;}
-    return root.getBF();
-  }
-
-  void setFactorBalance(Node<T> root)
-  {
-      if (root != null)
-      {
-          root.setBF(getAltura(root.getRight()) - getAltura(root.getLeft()));
-      }
-  }
-
-  private Node<T> rotacionDerecha(Node<T> x)
-  {
-    Node<T> h = x.getLeft();
-    x.setLeft(h.getRight());
-    h.setRight(x);
-
-    setFactorBalance(x);
-    setFactorBalance(h);
-
-    return h;
-  }
-
-  private Node<T> rotacionDobleDerecha(Node<T> x)
-  {
-      x.setLeft(rotacionIzquierda(x.getLeft()));
-      return rotacionDerecha(x);
-  }
-
-  Node<T> rotacionIzquierda(Node<T> x)
-  {
-    Node<T> h = x.getRight();
-    x.setRight(h.getLeft());
-    h.setLeft(x);
-
-    setFactorBalance(x);
-    setFactorBalance(h);
-
-    return h;
-  }
-
-  Node<T> rotacionDobleIzquierda(Node<T> x)
-  {
-    x.setRight(rotacionDerecha(x.getRight()));
-    return rotacionIzquierda(x);
-  }
-  */
-
   //ATRIB_______________________________________________________________________
 
   private Node<T> root = new Node();
@@ -384,6 +291,18 @@ final class Node<T extends Comparable>
 
   public void del()
   {}
+
+  public int altura()
+  {
+    if(this.getRight()!=null && this.getLeft()!=null)
+    {return Math.max(this.getRight().altura(),this.getLeft().altura())+1;}
+    else if(this.getRight()==null && this.getLeft()!=null)
+    {return this.getLeft().altura()+1;}
+    else if(this.getRight()!=null && this.getLeft()==null)
+    {return this.getRight().altura()+1;}
+    return 0;
+  }
+
 
   //ATRIB_______________________________________________________________________
 
