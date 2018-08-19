@@ -9,6 +9,7 @@ public class Tree
 
   public static void test()
   {
+    // árbol relleno de valores al azar:
     ArBin<Integer> ab = new ArBin<>(new Node<Integer>(new Integer(50)));
     java.util.ArrayList<Integer> list = new java.util.ArrayList<>();
     for (int i=0;i<10 ;i++ )
@@ -21,16 +22,21 @@ public class Tree
     }
 
     ab.add(list);
-    System.out.println("preorden:");
-    ab.preorden();
-    System.out.println("inorden:");
-    ab.inorden();
-    System.out.println("postorden:");
-    ab.postorden();
-    System.out.println("Niveles:");
-    ab.levels();
 
-    System.out.println("\n altura: \n "+ab.altura()+"\n"+ab.getRoot().getBF()+"\n");
+    // recorridos
+    System.out.println("preorden:");  ab.preorden();
+    System.out.println("inorden:");   ab.inorden();
+    System.out.println("postorden:"); ab.postorden();
+    System.out.println("Niveles:");   ab.levels();
+
+    // altura y factor de valance
+    System.out.println("\n altura: "+ab.altura()+"\n factorBalance: "+ab.getRoot().getBF());
+
+    // lleno, estricto, completo
+    System.out.println((ab.estricto())? "árbol estricto"  : "el árbol NO es estricto");
+    System.out.println((ab.completo())? "árbol completo"  : "el árbol NO está completo");
+    System.out.println((ab.lleno())?    "árbol lleno"     : "el árbol NO está lleno");
+
   }
 }
 
@@ -55,6 +61,83 @@ class ArBin<T extends Comparable>
   }
 
   //METHODS_____________________________________________________________________
+
+  //verificaciones lleno, completo, estricto
+
+  public boolean lleno()
+  {
+    return lleno(this.root);
+  }
+
+  public boolean completo()
+  {
+    return completo(this.root);
+  }
+
+  public boolean estricto()
+  {
+    return estricto(this.root);
+  }
+
+  public boolean lleno(Node<T> root)
+  {
+    // solo en caso de enviar un árbol vacío
+    if (root == null)
+    {System.out.println("  árbol vacío"); return false;}
+
+    if( root.getBF() == 0)  // comparar altura de ambas ramas (deben ser iguales)
+    {
+      if (root.getRight() == null && root.getLeft() == null) //se llegó a una hoja
+      {
+          return true;
+      }
+      if((root.getRight() != null && root.getLeft() == null) || // solo existe el hijo derecho
+            (root.getRight()==null && root.getLeft()!=null)) // solo existe el hijo izquierdo
+      {
+          return false;
+      }
+      return lleno(root.getRight()) && lleno(root.getLeft());
+    }
+    return false;
+  }
+
+  public boolean completo(Node<T> root)
+  {
+    /*  en caso de enviar un árbol de altura menor a 2
+        el primer condicional evita un ciclo infinito
+        en otro caso, la altura nunca es inferior a 2
+    */
+    if (root.altura() < 2)
+    {
+        return true;
+    }
+    // la altura es = 2 en el ante-penúltimo nivel del árbol
+    if (root.altura() == 2)
+    {
+      if (root.getRight() != null && root.getLeft() != null)
+      {
+          return true;
+      }
+      return false;
+    }
+
+    return completo(root.getLeft()) && completo(root.getRight());
+  }
+
+  public boolean estricto(Node<T> root)
+  {
+    if  ((root.getRight() != null && root.getLeft() == null) ||
+          (root.getRight()==null && root.getLeft()!=null))
+    {
+      return false;
+    }
+    if (root.getRight() == null && root.getLeft() == null)
+    {
+      return true;
+    }
+
+    return estricto(root.getRight()) && estricto(root.getLeft());
+  }
 
   //operaciones básicas
 
@@ -91,6 +174,30 @@ class ArBin<T extends Comparable>
       System.out.println("elemento similar descartado "+nodo);
     }
 
+    switch(root.getBF())
+    {
+      case -2:
+        if (root.getLeft().getBF() == 1)
+        {
+          root = doble_izquierda(root);
+        }
+        else if (root.getLeft().getBF() != 1)
+        {
+          root = rotacion_izquierda(root);
+        }
+      break;
+      case 2:
+        if (root.getRight().getBF() == -1)
+        {
+          root = doble_derecha(root);
+        }
+        else if (root.getLeft().getBF() != -1)
+        {
+          root = rotacion_derecha(root);
+        }
+      break;
+    }
+
   }
 
   public void add(Iterable<T> list)
@@ -99,6 +206,34 @@ class ArBin<T extends Comparable>
     {
       add(this.root,new Node<T>(t));
     }
+  }
+
+  public Node<T> rotacion_derecha(Node<T> root)
+  {
+    Node<T> x = root.getRight();
+    root.setRight(x.getLeft());
+    x.setLeft(root);
+    return x;
+  }
+
+  public Node<T> rotacion_izquierda(Node<T> root)
+  {
+    Node<T> x = root.getLeft();
+    root.setLeft(x.getRight());
+    x.setRight(root);
+    return x;
+  }
+
+  public Node<T> doble_derecha(Node<T> root)
+  {
+    root.setRight(rotacion_izquierda(root.getRight()));
+    return rotacion_derecha(root);
+  }
+
+  public Node<T> doble_izquierda(Node<T> root)
+  {
+    root.setLeft(rotacion_derecha(root.getLeft()));
+    return rotacion_izquierda(root);
   }
 
   public Node<T> search(T info)
