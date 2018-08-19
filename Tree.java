@@ -4,7 +4,7 @@ public class Tree
 {
   public static void main(String [] args)
   {
-    test();
+    test(); // crea un árbol random y prueba todas las funciones
   }
 
   public static void test()
@@ -16,23 +16,25 @@ public class Tree
     {
       list.add(new Integer((int)(Math.random()*101)));
     }
+    System.out.println("lista de números random a ser insertados:\nnuevo num: 50");
     for (Integer i : list)
     {
         System.out.println("nuevo num: "+i);
     }
-
+    System.out.println("\ninsertar y valancear:");
     ab.add(list);
 
     // recorridos
-    System.out.println("preorden:");  ab.preorden();
-    System.out.println("inorden:");   ab.inorden();
-    System.out.println("postorden:"); ab.postorden();
-    System.out.println("Niveles:");   ab.levels();
+    System.out.println("\npreorden:");  ab.preorden();
+    System.out.println("\ninorden:");   ab.inorden();
+    System.out.println("\npostorden:"); ab.postorden();
+    System.out.println("\nNiveles:");   ab.levels();
 
     // altura y factor de valance
     System.out.println("\n altura: "+ab.altura()+"\n factorBalance: "+ab.getRoot().getBF());
 
     // lleno, estricto, completo
+    System.out.println("\nverificaciones:");
     System.out.println((ab.estricto())? "árbol estricto"  : "el árbol NO es estricto");
     System.out.println((ab.completo())? "árbol completo"  : "el árbol NO está completo");
     System.out.println((ab.lleno())?    "árbol lleno"     : "el árbol NO está lleno");
@@ -103,6 +105,8 @@ class ArBin<T extends Comparable>
 
   public boolean completo(Node<T> root)
   {
+    if(root == null)
+    {return false;}
     /*  en caso de enviar un árbol de altura menor a 2
         el primer condicional evita un ciclo infinito
         en otro caso, la altura nunca es inferior a 2
@@ -174,30 +178,39 @@ class ArBin<T extends Comparable>
       System.out.println("elemento similar descartado "+nodo);
     }
 
-    switch(root.getBF())
+    if(compare != 0 && root.getRight() != null && root.getLeft() !=null)
     {
-      case -2:
-        if (root.getLeft().getBF() == 1)
-        {
-          root = doble_izquierda(root);
-        }
-        else if (root.getLeft().getBF() != 1)
-        {
-          root = rotacion_izquierda(root);
-        }
-      break;
-      case 2:
-        if (root.getRight().getBF() == -1)
-        {
-          root = doble_derecha(root);
-        }
-        else if (root.getLeft().getBF() != -1)
-        {
-          root = rotacion_derecha(root);
-        }
-      break;
+      switch(root.getBF())
+      {
+        case -2:
+          if (root.getLeft().getBF() == 1)
+          {
+            root = doble_izquierda(root);
+            System.out.println("doble izquierda: " + root);
+          }
+          else if (root.getLeft().getBF() != 1)
+          {
+            root = rotacion_izquierda(root);
+            System.out.println("simple izquierda: " + root);
+          }
+        break;
+        case 2:
+          if (root.getRight().getBF() == -1)
+          {
+            root = doble_derecha(root);
+            System.out.println("doble derecha: " + root);
+          }
+          else if (root.getLeft().getBF() != -1)
+          {
+            root = rotacion_derecha(root);
+            System.out.println("simple derecha: " + root);
+          }
+        break;
+        default:
+          System.out.println("rotación estable" + root);
+        break;
+      }
     }
-
   }
 
   public void add(Iterable<T> list)
