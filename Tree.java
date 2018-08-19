@@ -30,8 +30,7 @@ public class Tree
     System.out.println("Niveles:");
     ab.levels();
 
-
-    System.out.println("\n altura: \n "+ab.altura());
+    System.out.println("\n altura: \n "+ab.altura()+"\n"+ab.getRoot().getBF()+"\n");
   }
 }
 
@@ -91,7 +90,6 @@ class ArBin<T extends Comparable>
     {
       System.out.println("elemento similar descartado "+nodo);
     }
-
 
   }
 
@@ -303,13 +301,23 @@ final class Node<T extends Comparable>
     return 0;
   }
 
+  public int getBF()
+  {
+    if (this.getRight() == null && this.getLeft() == null)
+    {return 0;}
+    if (this.getRight() == null)
+    {return 0 - this.getLeft().altura();}
+    if (this.getLeft() == null)
+    {return this.getRight().altura();}
+
+    return this.getRight().altura() - this.getLeft().altura();
+  }
 
   //ATRIB_______________________________________________________________________
 
   private Node<T> left;
   private Node<T> right;
   private T info;
-  private int BF = 0;
 
   public void setLeft(Node<T> left)
   {
@@ -341,14 +349,5 @@ final class Node<T extends Comparable>
     return this.info;
   }
 
-  public int getBF()
-  {
-    return this.BF;
-  }
-
-  public void setBF(int bf)
-  {
-    this.BF = bf;
-  }
 
 }
